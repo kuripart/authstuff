@@ -2,6 +2,8 @@
 
 > Part of this app is built based on the tutorial in [How To Tango With Django](https://www.tangowithdjango.com/book17/index.html)
 
+> Link to this repo: https://github.com/kuripart/authstuff
+
 ### How Django takes care of authenication
 
 ```python
@@ -92,4 +94,3 @@ In `settings.py`
 Which allows you to specify the age of which a cookie can live to
 
 > `SESSION_COOKIE_AGE` = `<TIME-IN-SECONDS>` # expire in `TIME-IN-SECONDS`
-
