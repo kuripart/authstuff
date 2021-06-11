@@ -79,8 +79,6 @@ response.set_cookie('<COOKIE>', '<COOKIE-VALUE>')
 
 
 ```python
-from django.shortcuts import render
-
 request.session.get('<COOKIE>')
 request.session['<COOKIE>'] = '<COOKIE-VALUE>'
 ```
@@ -89,9 +87,9 @@ NOTE:
 
 In `settings.py`
 
-> SESSION_EXPIRE_AT_BROWSER_CLOSE = False # to not expire on browser closure
+> `SESSION_EXPIRE_AT_BROWSER_CLOSE` = `False` # to not expire on browser closure
 
 Which allows you to specify the age of which a cookie can live to
 
-> SESSION_COOKIE_AGE = <TIME-IN-SECONDS> # expire in <TIME-IN-SECONDS>
+> `SESSION_COOKIE_AGE` = `<TIME-IN-SECONDS>` # expire in `TIME-IN-SECONDS`
 
