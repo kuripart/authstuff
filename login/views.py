@@ -8,18 +8,24 @@ from .forms import UserForm, UserProfileForm
 
 
 def home(request):
+    """
+    Index/Home Page
+    """
     context_dict = {}
+    visits_time = 5
 
+    # Use this to test cookies
     request.session.set_test_cookie()
 
     ## Accessing server side cookies
+    ## request.session.get('visits') => request.COOKIES.get('visits', '1')
+
     # visits = request.session.get('visits')
     # if not visits:
     #     visits = 1
     # reset_last_visit_time = False
 
     last_visit = request.session.get('last_visit')
-    # request.session.set_test_cookie()
     # Get the number of visits to the site.
     # We use the COOKIES.get() function to obtain the visits cookie.
     # If the cookie exists, the value returned is casted to an integer.
@@ -27,30 +33,28 @@ def home(request):
     # Note that all cookie values are returned as strings
     visits = int(request.COOKIES.get('visits', '1'))
 
-    reset_last_visit_time = False
+    set_last_visit_time = False
     response = render(request, 'login/home.html', context_dict)
     # Does the cookie last_visit exist?
     if 'last_visit' in request.COOKIES:
-        # Yes it does! Get the cookie's value.
         last_visit = request.COOKIES['last_visit']
-        # Cast the value to a Python date/time object.
         last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
 
-        # If it's been more than a day since the last visit...
-        if (datetime.now() - last_visit_time).seconds > 5:
+        # Toggle between seconds, days to play around with the cookie visits setting
+        if (datetime.now() - last_visit_time).seconds > visits_time:
             visits = visits + 1
-            # ...and flag that the cookie last visit needs to be updated
-            reset_last_visit_time = True
+            # visits set, so set_cookie
+            set_last_visit_time = True
     else:
         # Cookie last_visit doesn't exist, so flag that it should be set.
-        reset_last_visit_time = True
+        set_last_visit_time = True
 
         context_dict['visits'] = visits
 
-        #Obtain our Response object early so we can add cookie information.
+        # Obtain our Response object early so we can add cookie information.
         response = render(request, 'login/home.html', context_dict)
 
-    if reset_last_visit_time:
+    if set_last_visit_time:
         response.set_cookie('last_visit', datetime.now())
         response.set_cookie('visits', visits)
 
@@ -61,6 +65,9 @@ def home(request):
 ## register & login --> essentially POST requests
 
 def register(request):
+    """
+    Basic Registration View
+    """
 
     if request.session.test_cookie_worked():
         print(">>>> TEST COOKIE WORKED!")
@@ -124,6 +131,9 @@ def register(request):
 
 
 def user_login(request):
+    """
+    Basic Login View
+    """
 
 
     # If the request is a HTTP POST, try to pull out the relevant information.
@@ -152,7 +162,7 @@ def user_login(request):
                 return HttpResponseRedirect('/')
             else:
                 # An inactive account was used - no logging in!
-                return HttpResponse("Your Rango account is disabled.")
+                return HttpResponse("Account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
             print("Invalid login details: {0}, {1}".format(username, password))
@@ -171,7 +181,7 @@ def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
     # if not logged in: define LOGIN_URL = '/login/' in settings.py --> send to the login page
 
-# ## THIS FUCTION IS LIKE THE ONE ON THE TOP
+## THIS FUCTION IS LIKE THE ONE ON THE TOP
 # def restricted(request):
 #     if not request.user.is_authenticated():
 #         return HttpResponse("You are logged in.")
