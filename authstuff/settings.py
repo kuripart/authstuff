@@ -130,3 +130,10 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Persistent sessions are enabled by default, with SESSION_EXPIRE_AT_BROWSER_CLOSE either set to False, or not being present in your project’s settings.py
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Which allows you to specify the age of which a cookie can live to
+# SESSION_COOKIE_AGE = 1209600 # expire in 2 weeks

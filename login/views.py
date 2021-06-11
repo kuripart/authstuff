@@ -10,6 +10,8 @@ from .forms import UserForm, UserProfileForm
 def home(request):
     context_dict = {}
 
+    request.session.set_test_cookie()
+
     ## Accessing server side cookies
     # visits = request.session.get('visits')
     # if not visits:
@@ -22,6 +24,7 @@ def home(request):
     # We use the COOKIES.get() function to obtain the visits cookie.
     # If the cookie exists, the value returned is casted to an integer.
     # If the cookie doesn't exist, we default to zero and cast that.
+    # Note that all cookie values are returned as strings
     visits = int(request.COOKIES.get('visits', '1'))
 
     reset_last_visit_time = False
@@ -34,7 +37,7 @@ def home(request):
         last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
 
         # If it's been more than a day since the last visit...
-        if (datetime.now() - last_visit_time).days > 5:
+        if (datetime.now() - last_visit_time).seconds > 5:
             visits = visits + 1
             # ...and flag that the cookie last visit needs to be updated
             reset_last_visit_time = True
@@ -54,11 +57,14 @@ def home(request):
     # Return response back to the user, updating any cookies that need changed.
     return response
 
+
+## register & login --> essentially POST requests
+
 def register(request):
 
-    # if request.session.test_cookie_worked():
-    #     print(">>>> TEST COOKIE WORKED!")
-    #     request.session.delete_test_cookie()
+    if request.session.test_cookie_worked():
+        print(">>>> TEST COOKIE WORKED!")
+        request.session.delete_test_cookie()
 
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
@@ -165,7 +171,7 @@ def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
     # if not logged in: define LOGIN_URL = '/login/' in settings.py --> send to the login page
 
-## THIS FUCTION IS LIKE THE ONE ON THE TOP
+# ## THIS FUCTION IS LIKE THE ONE ON THE TOP
 # def restricted(request):
 #     if not request.user.is_authenticated():
 #         return HttpResponse("You are logged in.")
