@@ -93,6 +93,4 @@ In `settings.py`
 
 > `SESSION_EXPIRE_AT_BROWSER_CLOSE` = `False` # to not expire on browser closure
 
-Which allows you to specify the age of which a cookie can live to
-
 > `SESSION_COOKIE_AGE` = `<TIME-IN-SECONDS>` # expire in `TIME-IN-SECONDS`
