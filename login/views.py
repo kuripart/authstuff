@@ -15,7 +15,9 @@ def home(request):
     """
     Index/Home Page
     """
-    signer = Signer() # To sign and unsign cookie values as they are stored used.
+    # delete exisiting cookies before toggling between signers (in a test env), or will get a bad signature error
+    # signer = Signer() # To sign and unsign cookie values as they are stored used.
+    signer = TimestampSigner() # Appends a signed timestamp to the value
     context_dict = {}
     visits_time = 5
 
@@ -36,7 +38,12 @@ def home(request):
     # If the cookie exists, the value returned is casted to an integer.
     # If the cookie doesn't exist, we default to zero and cast that.
     # Note that all cookie values are returned as strings
-    visits = int(signer.unsign(request.COOKIES.get('visits', '1')))
+    visits = 1
+    if request.COOKIES.get('visits'):
+        try:
+            visits = int(signer.unsign(request.COOKIES.get('visits'), max_age=10))
+        except (signing.SignatureExpired, signing.BadSignature):
+            logout(request)
 
     set_last_visit_time = False
     response = render(request, 'login/home.html', context_dict)
@@ -62,6 +69,7 @@ def home(request):
     if set_last_visit_time:
         response.set_cookie('last_visit', signer.sign(datetime.now()))
         response.set_cookie('visits', signer.sign(visits))
+
 
     # Return response back to the user, updating any cookies that need changed.
     return response
