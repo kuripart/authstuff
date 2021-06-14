@@ -27,6 +27,7 @@ def register(request)
 ### Login and Logout
 
 ```python
+from django.contrib.auth import login, logout
 username = request.POST.get('username')
 password = request.POST.get('password')
 user = authenticate(username=username, password=password)
@@ -94,3 +95,25 @@ In `settings.py`
 > `SESSION_EXPIRE_AT_BROWSER_CLOSE` = `False` # to not expire on browser closure
 
 > `SESSION_COOKIE_AGE` = `<TIME-IN-SECONDS>` # expire in `TIME-IN-SECONDS`
+
+
+### Working with timed-signed cookies
+
+```python
+from django.core import signing
+from django.shortcuts import render
+from django.contrib.auth import logout
+from django.core.signing import TimestampSigner
+
+response = render(request, '<TEMPLATE-PATH>', {})
+response.set_cookie('<COOKIE>', '<COOKIE-VALUE>')
+
+# some code...
+
+try:
+    visits = int(signer.unsign(request.COOKIES.get('<COOKIE>'), max_age=10))
+except (signing.SignatureExpired, signing.BadSignature):
+    logout(request)
+```
+
+> Look into [test script](test-signed.py) for tutotial.
