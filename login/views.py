@@ -3,6 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.core.signing import Signer
+from django.core import signing
+from datetime import timedelta
+from django.core.signing import TimestampSigner
 
 from .forms import UserForm, UserProfileForm
 
@@ -11,6 +15,7 @@ def home(request):
     """
     Index/Home Page
     """
+    signer = Signer() # To sign and unsign cookie values as they are stored used.
     context_dict = {}
     visits_time = 5
 
@@ -31,13 +36,13 @@ def home(request):
     # If the cookie exists, the value returned is casted to an integer.
     # If the cookie doesn't exist, we default to zero and cast that.
     # Note that all cookie values are returned as strings
-    visits = int(request.COOKIES.get('visits', '1'))
+    visits = int(signer.unsign(request.COOKIES.get('visits', '1')))
 
     set_last_visit_time = False
     response = render(request, 'login/home.html', context_dict)
     # Does the cookie last_visit exist?
     if 'last_visit' in request.COOKIES:
-        last_visit = request.COOKIES['last_visit']
+        last_visit = signer.unsign(request.COOKIES['last_visit'])
         last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
 
         # Toggle between seconds, days to play around with the cookie visits setting
@@ -55,8 +60,8 @@ def home(request):
         response = render(request, 'login/home.html', context_dict)
 
     if set_last_visit_time:
-        response.set_cookie('last_visit', datetime.now())
-        response.set_cookie('visits', visits)
+        response.set_cookie('last_visit', signer.sign(datetime.now()))
+        response.set_cookie('visits', signer.sign(visits))
 
     # Return response back to the user, updating any cookies that need changed.
     return response
