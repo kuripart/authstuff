@@ -125,3 +125,11 @@ print(un)
 value = signing.dumps(('a','b','c'))
 print(signing.loads(value))
 ## ['a', 'b', 'c']
+
+
+### Use your own signature in place of SECRET_KEY
+
+signer = Signer('my-other-secret')
+value = signer.sign('My string')
+print(value)
+## My string:o3DrrsT6JRB73t-HDymfDNbTSxfMlom2d8TiUlb1hWY
