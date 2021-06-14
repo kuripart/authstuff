@@ -116,4 +116,4 @@ except (signing.SignatureExpired, signing.BadSignature):
     logout(request)
 ```
 
-> Look into [test script](test-signed.py) for tutotial.
+> Look into [test script](test-signed.py) for tutorial.
