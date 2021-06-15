@@ -1,10 +1,8 @@
-## Auth and Sessions in Django
+## [Auth and Sessions in Django](https://github.com/kuripart/authstuff)
 
 > Part of this app is built based on the tutorial in [How To Tango With Django](https://www.tangowithdjango.com/book17/index.html)
 
 > Great repo with cool tips on how to get started with a basic app: https://github.com/lucrae/django-cheat-sheet
-
-> Link to this repo: https://github.com/kuripart/authstuff
 
 ### How Django takes care of authenication
 
